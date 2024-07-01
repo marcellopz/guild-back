@@ -9,6 +9,7 @@ function validadeEnv(): void {
         PORT: port({
             default: 3000,
         }),
+        JWT_SECRET: str(),
     });
 }
 
