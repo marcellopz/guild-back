@@ -11,7 +11,7 @@ class UserService {
         name: string,
         email: string,
         password: string,
-        // role: string,
+        role: string = 'user',
     ): Promise<string | Error> {
         try {
             const user = await this.user.create({
@@ -54,3 +54,5 @@ class UserService {
         }
     }
 }
+
+export default UserService;

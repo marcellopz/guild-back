@@ -1,6 +1,6 @@
 import { cleanEnv, str, port } from 'envalid';
 
-function validadeEnv(): void {
+function validateEnv(): void {
     cleanEnv(process.env, {
         NODE_ENV: str({
             choices: ['development', 'production'],
@@ -13,4 +13,4 @@ function validadeEnv(): void {
     });
 }
 
-export default validadeEnv;
+export default validateEnv;
