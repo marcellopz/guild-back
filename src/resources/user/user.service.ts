@@ -8,15 +8,13 @@ class UserService {
      * Register a new user
      */
     async register(
-        name: string,
-        email: string,
+        username: string,
         password: string,
         role: string = 'user',
     ): Promise<string | Error> {
         try {
             const user = await this.user.create({
-                name,
-                email,
+                username,
                 password,
             });
             const accessToken = token.createToken(user);
@@ -32,9 +30,9 @@ class UserService {
     /**
      * Login a user
      */
-    async login(email: string, password: string): Promise<string | Error> {
+    async login(username: string, password: string): Promise<string | Error> {
         try {
-            const user = await this.user.findOne({ email });
+            const user = await this.user.findOne({ username });
             if (!user) {
                 return new Error('User not found');
             }
