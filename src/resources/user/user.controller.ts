@@ -7,7 +7,7 @@ import UserService from '@/resources/user/user.service';
 import authenticated from '@/middleware/authenticated.middleware';
 
 class UserController implements Controller {
-    public path = '/users';
+    public path = '/auth';
     public router = Router();
     private userService = new UserService();
 
@@ -27,6 +27,7 @@ class UserController implements Controller {
             this.login,
         );
         this.router.get(`${this.path}`, authenticated, this.getUser);
+        this.router.post(`${this.path}/logout`, this.logout);
     }
 
     private register = async (
@@ -42,7 +43,11 @@ class UserController implements Controller {
                 password,
                 'user',
             );
-            res.status(201).json({ token });
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+            });
+            res.status(201).json({ message: 'User registered successfully' });
         } catch (error: any) {
             next(
                 new HttpException(
@@ -62,13 +67,40 @@ class UserController implements Controller {
         try {
             const { email, password } = req.body;
             const token = await this.userService.login(email, password);
-            res.status(200).json({ token });
+            if (token instanceof Error) {
+                return next(new HttpException(401, token.message));
+            }
+            // res.status(200).json({ token });
+            res.cookie('token', token, {
+                httpOnly: true,
+                secure: process.env.NODE_ENV === 'production',
+            });
+            res.status(200).json({ message: 'Logged in successfully' });
         } catch (error: any) {
             next(
                 new HttpException(
                     400,
                     error?.message ??
                         'An error occurred while logging in the user',
+                ),
+            );
+        }
+    };
+
+    private logout = (
+        req: Request,
+        res: Response,
+        next: NextFunction,
+    ): Response | void => {
+        try {
+            res.clearCookie('token');
+            res.status(200).json({ message: 'Logged out successfully' });
+        } catch (error: any) {
+            next(
+                new HttpException(
+                    400,
+                    error?.message ??
+                        'An error occurred while logging out the user',
                 ),
             );
         }

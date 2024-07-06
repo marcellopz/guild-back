@@ -10,20 +10,17 @@ async function authenticatedMiddleware(
     res: Response,
     next: NextFunction,
 ): Promise<Response | void> {
-    const bearer = req.headers.authorization;
+    const token = req.cookies?.token ?? '';
 
-    if (!bearer || !bearer.startsWith('Bearer ')) {
+    if (!token) {
         return next(new HttpException(401, 'Unauthorized'));
     }
 
-    const accessToken = bearer.split('Bearer ')[1].trim();
-
     try {
-        const payload: Token | jwt.JsonWebTokenError =
-            await verifyToken(accessToken);
+        const payload: Token | jwt.JsonWebTokenError = await verifyToken(token);
 
         if (payload instanceof jwt.JsonWebTokenError) {
-            return next(new HttpException(401, 'Unauthorized'));
+            return next(new HttpException(401, 'Invalid token'));
         }
 
         const user = await UserModel.findById(payload.id)
@@ -31,7 +28,7 @@ async function authenticatedMiddleware(
             .exec();
 
         if (!user) {
-            return next(new HttpException(401, 'Unauthorized'));
+            return next(new HttpException(401, 'User not found'));
         }
 
         req.user = user;

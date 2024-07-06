@@ -4,8 +4,22 @@ import compression from 'compression';
 import cors from 'cors';
 import morgan from 'morgan';
 import helmet from 'helmet';
+import cookieParser from 'cookie-parser';
 import Controller from '@/utils/interfaces/controller.interface';
 import errorMiddleware from '@/middleware/error.middleware';
+
+const allowedOrigins = ['http://localhost:5173']; // Add other origins as needed
+
+const corsOptions: cors.CorsOptions = {
+    origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, origin || true);
+        } else {
+            callback(new Error('Origin not allowed by CORS'));
+        }
+    },
+    credentials: true,
+};
 
 class App {
     public express: Application;
@@ -27,9 +41,10 @@ class App {
         this.express.use(express.json());
         this.express.use(express.urlencoded({ extended: true }));
         this.express.use(compression());
-        this.express.use(cors());
+        this.express.use(cors(corsOptions));
         this.express.use(helmet());
         this.express.use(morgan('dev'));
+        this.express.use(cookieParser());
     }
 
     private initializeControllers(controllers: Controller[]): void {
