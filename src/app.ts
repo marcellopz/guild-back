@@ -79,7 +79,9 @@ class App {
 
     public listen(): void {
         this.express.listen(this.port, () => {
-            console.log(`Server running on port ${this.port}`);
+            console.log(
+                `Server running on port ${this.port} - render: ${process.env.RENDER}`,
+            );
         });
     }
 }
