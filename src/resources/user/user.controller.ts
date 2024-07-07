@@ -44,7 +44,7 @@ class UserController implements Controller {
             );
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.RENDER === 'true',
+                secure: true,
                 sameSite: 'none',
             });
             res.status(201).json({ message: 'User registered successfully' });
@@ -70,10 +70,9 @@ class UserController implements Controller {
             if (token instanceof Error) {
                 return next(new HttpException(401, token.message));
             }
-            // res.status(200).json({ token });
             res.cookie('token', token, {
                 httpOnly: true,
-                secure: process.env.RENDER === 'true',
+                secure: true,
                 sameSite: 'none',
             });
             res.status(200).json({ message: 'Logged in successfully' });

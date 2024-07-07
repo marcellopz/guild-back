@@ -17,7 +17,9 @@ class UserService {
                 username,
                 password,
             });
+            console.log('user', user);
             const accessToken = token.createToken(user);
+            console.log('accessToken', accessToken);
 
             return accessToken;
         } catch (error: any) {
