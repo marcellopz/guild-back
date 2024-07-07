@@ -8,7 +8,12 @@ import cookieParser from 'cookie-parser';
 import Controller from '@/utils/interfaces/controller.interface';
 import errorMiddleware from '@/middleware/error.middleware';
 
-const allowedOrigins = ['http://localhost:5173']; // Add other origins as needed
+const allowedOrigins = [
+    'http://localhost:5173',
+    'guild-games.vercel.app',
+    'https://guild-games.vercel.app',
+    'http://guild-games.vercel.app',
+]; // Add other origins as needed
 
 const corsOptions: cors.CorsOptions = {
     origin: (origin, callback) => {
