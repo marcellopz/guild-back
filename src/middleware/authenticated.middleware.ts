@@ -10,6 +10,7 @@ async function authenticatedMiddleware(
     res: Response,
     next: NextFunction,
 ): Promise<Response | void> {
+    console.log(req.cookies?.token);
     const token = req.cookies?.token ?? '';
 
     if (!token) {
