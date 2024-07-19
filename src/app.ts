@@ -7,6 +7,7 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import Controller from '@/utils/interfaces/controller.interface';
 import errorMiddleware from '@/middleware/error.middleware';
+import Hash from './games/hash_game/hash';
 
 const allowedOrigins = [
     'http://localhost:5173',
@@ -29,10 +30,12 @@ const corsOptions: cors.CorsOptions = {
 class App {
     public express: Application;
     public port: number;
+    public hash: Hash;
 
     constructor(controllers: Controller[], port: number) {
         this.express = express();
         this.port = port;
+        this.hash = new Hash();
 
         this.initializeDatabaseConnection();
         this.initializeMiddlewares();
