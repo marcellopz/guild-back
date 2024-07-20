@@ -8,9 +8,11 @@ import cookieParser from 'cookie-parser';
 import Controller from '@/utils/interfaces/controller.interface';
 import errorMiddleware from '@/middleware/error.middleware';
 import Hash from './games/hash_game/hash';
+import { createServer, Server as HTTPServer } from 'http';
+import Socket from '@/resources/Socket';
 import GamesManager from './games/games_manager';
 
-const allowedOrigins = [
+export const allowedOrigins = [
     'http://localhost:5173',
     'guild-games.vercel.app',
     'https://guild-games.vercel.app',
@@ -31,11 +33,16 @@ const corsOptions: cors.CorsOptions = {
 class App {
     public express: Application;
     public port: number;
-    public games_manager: GamesManager
+    public httpServer: HTTPServer;
+    public socket: Socket;
+    public games_manager: GamesManager;
 
     constructor(controllers: Controller[], port: number) {
         this.express = express();
         this.port = port;
+        this.httpServer = createServer(this.express);
+        this.socket = new Socket(this.httpServer);
+        this.games_manager = new GamesManager();
 
         this.initializeDatabaseConnection();
         this.initializeMiddlewares();
@@ -43,8 +50,6 @@ class App {
 
         // Error handling middleware should be loaded after the loading the controllers
         this.initializeErrorHandling();
-
-        this.games_manager = new GamesManager();
     }
 
     private initializeMiddlewares(): void {
@@ -83,7 +88,7 @@ class App {
     }
 
     public listen(): void {
-        this.express.listen(this.port, () => {
+        this.httpServer.listen(this.port, () => {
             console.log(
                 `Server running on port ${this.port} - render: ${process.env.RENDER}`,
             );
