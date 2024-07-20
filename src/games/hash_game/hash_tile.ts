@@ -1,22 +1,22 @@
 class HashTile{
-    private coordinates : number[]
-    private simbol : string
+    private _coordinates : number[]
+    private _simbol : string
 
     constructor(i : number, j : number){
-        this.coordinates = [i, j]
-        this.simbol = "";
+        this._coordinates = [i, j]
+        this._simbol = "";
     }
 
     public get_coordinates() : number[]{
-        return this.coordinates;
+        return this._coordinates;
     }
 
     public get_simbol() : string{
-        return this.simbol
+        return this._simbol
     }
 
     public set_simbol(simbol:string){
-        this.simbol = simbol;
+        this._simbol = simbol;
     }
 }
 

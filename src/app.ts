@@ -10,6 +10,7 @@ import errorMiddleware from '@/middleware/error.middleware';
 import Hash from './games/hash_game/hash';
 import { createServer, Server as HTTPServer } from 'http';
 import Socket from '@/resources/Socket';
+import GamesManager from './games/games_manager';
 
 export const allowedOrigins = [
     'http://localhost:5173',
@@ -32,16 +33,16 @@ const corsOptions: cors.CorsOptions = {
 class App {
     public express: Application;
     public port: number;
-    public hash: Hash;
     public httpServer: HTTPServer;
     public socket: Socket;
+    public games_manager: GamesManager;
 
     constructor(controllers: Controller[], port: number) {
         this.express = express();
         this.port = port;
-        this.hash = new Hash();
         this.httpServer = createServer(this.express);
         this.socket = new Socket(this.httpServer);
+        this.games_manager = new GamesManager();
 
         this.initializeDatabaseConnection();
         this.initializeMiddlewares();

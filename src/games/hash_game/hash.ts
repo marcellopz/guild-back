@@ -18,7 +18,28 @@ class Hash {
         }
     }
 
-    public line_check(line:number, symbol:string) : number{
+    public check_coordinate(coordinate:number[], symbol:string){
+        if (this.line_check(coordinate[0], symbol)){
+            return true;
+        }
+
+        if (this.column_check(coordinate[1], symbol)){
+            return true;
+        }
+
+        if (coordinate[0] == coordinate[1] && this.main_diagonal_check(symbol)){
+            return true;
+        }
+
+        if (coordinate[0] + coordinate[1] == 2 && this.secondary_diagonal_check(symbol))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public line_check(line:number, symbol:string) : boolean{
         var count : number = 0;
         for (var j: number = 0; j < 3; j++){
             var actual_symbol : string = this.hash[line][j].get_simbol()
@@ -26,13 +47,20 @@ class Hash {
                 count++;
             }
             else{
-                return 0
+                return false
             }
         }
-        return count;
+
+        if (count == 3){
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public column_check(column:number, symbol:string) : number{
+    public column_check(column:number, symbol:string) : boolean{
         var count : number = 0;
         for (var i: number = 0; i < 3; i++){
             var actual_symbol : string = this.hash[i][column].get_simbol()
@@ -40,13 +68,20 @@ class Hash {
                 count++;
             }
             else{
-                return 0
+                return false
             }
         }
-        return count;
+
+        if (count == 3){
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public main_diagonal_check(symbol:string){
+    public main_diagonal_check(symbol:string) : boolean{
         var count : number = 0;
         for (var i: number = 0; i < 3; i++) {
             this.hash[i] = [];
@@ -59,15 +94,22 @@ class Hash {
                     }
                     else
                     {
-                        return 0;
+                        return false;
                     }
                 }
             }
         }
-        return count;
+
+        if (count == 3){
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
-    public secondary_diagonal_check(symbol:string){
+    public secondary_diagonal_check(symbol:string) : boolean{
         var count : number = 0;
         for (var i: number = 0; i < 3; i++) {
             this.hash[i] = [];
@@ -80,12 +122,19 @@ class Hash {
                     }
                     else
                     {
-                        return 0;
+                        return false;
                     }
                 }
             }
         }
-        return count;
+
+        if (count == 3){
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
 
