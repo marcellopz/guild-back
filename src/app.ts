@@ -8,6 +8,7 @@ import cookieParser from 'cookie-parser';
 import Controller from '@/utils/interfaces/controller.interface';
 import errorMiddleware from '@/middleware/error.middleware';
 import Hash from './games/hash_game/hash';
+import GamesManager from './games/games_manager';
 
 const allowedOrigins = [
     'http://localhost:5173',
@@ -30,12 +31,11 @@ const corsOptions: cors.CorsOptions = {
 class App {
     public express: Application;
     public port: number;
-    public hash: Hash;
+    public games_manager: GamesManager
 
     constructor(controllers: Controller[], port: number) {
         this.express = express();
         this.port = port;
-        this.hash = new Hash();
 
         this.initializeDatabaseConnection();
         this.initializeMiddlewares();
@@ -43,6 +43,8 @@ class App {
 
         // Error handling middleware should be loaded after the loading the controllers
         this.initializeErrorHandling();
+
+        this.games_manager = new GamesManager();
     }
 
     private initializeMiddlewares(): void {
