@@ -9,9 +9,9 @@ import Controller from '@/utils/interfaces/controller.interface';
 import errorMiddleware from '@/middleware/error.middleware';
 import Hash from './games/hash_game/hash';
 import { createServer, Server as HTTPServer } from 'http';
-import { Server as SockerIOServer } from 'socket.io';
+import Socket from '@/resources/Socket';
 
-const allowedOrigins = [
+export const allowedOrigins = [
     'http://localhost:5173',
     'guild-games.vercel.app',
     'https://guild-games.vercel.app',
@@ -29,36 +29,23 @@ const corsOptions: cors.CorsOptions = {
     credentials: true,
 };
 
-interface User {
-    id: string;
-    username: string;
-    socketId: string;
-}
-
 class App {
     public express: Application;
     public port: number;
     public hash: Hash;
     public httpServer: HTTPServer;
-    public io: SockerIOServer;
-    private usersOnline: Record<string, User> = {};
+    public socket: Socket;
 
     constructor(controllers: Controller[], port: number) {
         this.express = express();
         this.port = port;
         this.hash = new Hash();
         this.httpServer = createServer(this.express);
-        this.io = new SockerIOServer(this.httpServer, {
-            cors: {
-                origin: allowedOrigins,
-                credentials: true,
-            },
-        });
+        this.socket = new Socket(this.httpServer);
 
         this.initializeDatabaseConnection();
         this.initializeMiddlewares();
         this.initializeControllers(controllers);
-        this.initializeSocketIO();
 
         // Error handling middleware should be loaded after the loading the controllers
         this.initializeErrorHandling();
@@ -97,39 +84,6 @@ class App {
             .catch((error) => {
                 console.log(error);
             });
-    }
-
-    private initializeSocketIO(): void {
-        this.io.on('connection', (socket) => {
-            socket.on(
-                'join_server',
-                (user_?: { username: string; userId: string }) => {
-                    if (!user_) return;
-                    this.usersOnline[user_.userId] = {
-                        id: user_.userId,
-                        username: user_.username,
-                        socketId: socket.id,
-                    };
-                    this.io.emit('users_online', this.usersOnline); // this.io emite para todos os usuários
-                },
-            );
-            socket.on('message', (message) =>
-                console.log('Message received', message),
-            );
-            const removeUser = () => {
-                console.log('Client disconnected', socket.id);
-                const user = Object.values(this.usersOnline).find(
-                    (user) => user.socketId === socket.id,
-                );
-                if (!user) return;
-                delete this.usersOnline[user.id];
-                this.io.emit('users_online', this.usersOnline); // this.io emite para todos os usuários
-            };
-            socket.on('disconnect', removeUser);
-            socket.on('logout', removeUser);
-            socket.emit('users_online', this.usersOnline); // socket.emit emite apenas para o usuário que se conectou
-            console.log('Client connected', socket.id);
-        });
     }
 
     public listen(): void {
