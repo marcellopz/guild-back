@@ -48,7 +48,9 @@ class ChatRoomManager {
         user: User,
         chatRoom: ChatRoom,
     ) {
-        this.io.emit('chat_users_online', chatRoom.getUsers());
+        this.io
+            .to(chatRoom.getName())
+            .emit('chat_users_online', chatRoom.getUsers());
         socket.on('disconnect', () => {
             chatRoom.removeUser(user);
             this.io
