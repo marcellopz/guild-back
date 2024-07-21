@@ -1,22 +1,30 @@
-import User from "./User";
+import User from './User';
 
-class ChatRoom{
-    private id:string;
-    private name:string;
-    private users:User[];
+class ChatRoom {
+    private id: string;
+    private name: string;
+    private users: User[];
 
-    constructor(name:string,){
+    constructor(name: string) {
         this.id = name;
         this.name = name;
-        this.users = []
+        this.users = [];
     }
 
-    public addUser(user:User){
+    public addUser(user: User) {
         this.users.push(user);
     }
 
-    public getName():string{
+    public removeUser(user: User) {
+        this.users = this.users.filter((u) => u !== user);
+    }
+
+    public getName(): string {
         return this.name;
+    }
+
+    public getUsers(): User[] {
+        return this.users;
     }
 }
 
