@@ -1,14 +1,15 @@
 import { Server as SockerIOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { allowedOrigins } from '../app';
-import RoomManager from './RoomManager';
-import SocketClient from './SocketClient';
-import User, { IUser } from './User';
+import GameRoomManager from './GameRoomManager';
+import User from './User';
+import { ServerManager } from './ServerManager';
 
 
 class SocketAdapter {
     public static io: SockerIOServer;
-    public usersOnline: Record<string, IUser> = {};
+    public usersOnline: Record<string, User> = {};
+    public serverManager: ServerManager = ServerManager.getInstance();
 
     constructor(httpServer: HTTPServer) {
         SocketAdapter.io = new SockerIOServer(httpServer, {
@@ -18,10 +19,10 @@ class SocketAdapter {
             },
         });
         this.initializeSocketIO();
+        this.initializeServerManager();
     }
 
     private initializeSocketIO(): void {
-        
         SocketAdapter.io.on('connection', (socket) => {
             socket.on(
                 'join_server',
@@ -54,12 +55,8 @@ class SocketAdapter {
         });
     }
 
-
-    public getUserBySocketID(socketID:string){
-        const user = Object.values(this.usersOnline).find(
-            (user) => user.socketId === socketID,
-        );
-        return user;
+    private initializeServerManager(){
+        this.serverManager.usersOnline = this.usersOnline;
     }
 }
 

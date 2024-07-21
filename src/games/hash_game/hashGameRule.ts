@@ -4,7 +4,6 @@ import Player from "games/player";
 import HashTile from "./hashTile";
 import Hash from "./hash";
 import { Socket } from "socket.io";
-import SocketClient from "@/resources/SocketClient";
 
 class HashGameRule extends GameRule<HashGame>{
     private _hash_game: HashGame;

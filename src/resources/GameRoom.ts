@@ -1,6 +1,6 @@
 import User from "./User";
 
-class Room{
+class GameRoom{
     private id:string;
     private name:string;
     private password:string;
@@ -20,4 +20,4 @@ class Room{
     }
 }
 
-export default Room;
+export default GameRoom;

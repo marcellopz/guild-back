@@ -1,10 +1,4 @@
-export interface IUser {
-    id: string;
-    username: string;
-    socketId: string;
-}
-
-class User implements IUser{
+class User{
     id: string;
     username: string;
     socketId: string;
