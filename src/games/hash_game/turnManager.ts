@@ -8,16 +8,16 @@ class TurnManager{
 
     constructor(players:Array<Player>){
         this._players = players;
-        this._actual_index = this.randomize_turn();
+        this._actual_index = this.randomizeTurn();
         this._actual_player = players[this._actual_index];
     }
 
-    public randomize_turn() : number{
+    public randomizeTurn() : number{
         var randNum = Random.getRandomIntInclusive(0, 1);
         return randNum;
     }
 
-    public change_turn(){
+    public changeTurn(){
         if (this._actual_index == 0){
             this._actual_index = 1;
         }
@@ -27,7 +27,7 @@ class TurnManager{
         this._actual_player = this._players[this._actual_index]
     }
 
-    public get_actual_player() : Player | null {
+    public getActualPlayer() : Player | null {
         return this._actual_player;
     }
 }

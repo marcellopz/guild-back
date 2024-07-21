@@ -1,19 +1,17 @@
-import { Server as SockerIOServer } from 'socket.io';
+import { Server as SockerIOServer, Socket } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { allowedOrigins } from '../app';
+import RoomManager from './RoomManager';
+import SocketClient from './SocketClient';
+import User, { IUser } from './User';
 
-interface User {
-    id: string;
-    username: string;
-    socketId: string;
-}
 
-class Socket {
-    private static io: SockerIOServer;
-    public usersOnline: Record<string, User> = {};
+class SocketAdapter {
+    public static io: SockerIOServer;
+    public usersOnline: Record<string, IUser> = {};
 
     constructor(httpServer: HTTPServer) {
-        Socket.io = new SockerIOServer(httpServer, {
+        SocketAdapter.io = new SockerIOServer(httpServer, {
             cors: {
                 origin: allowedOrigins,
                 credentials: true,
@@ -23,7 +21,8 @@ class Socket {
     }
 
     private initializeSocketIO(): void {
-        Socket.io.on('connection', (socket) => {
+        
+        SocketAdapter.io.on('connection', (socket) => {
             socket.on(
                 'join_server',
                 (user_?: { username: string; userId: string }) => {
@@ -33,7 +32,7 @@ class Socket {
                         username: user_.username,
                         socketId: socket.id,
                     };
-                    Socket.io.emit('users_online', this.usersOnline); // Socket.io emite para todos os usuários
+                    SocketAdapter.io.emit('users_online', this.usersOnline); // Socket.io emite para todos os usuários
                 },
             );
             socket.on('message', (message) =>
@@ -46,7 +45,7 @@ class Socket {
                 );
                 if (!user) return;
                 delete this.usersOnline[user.id];
-                Socket.io.emit('users_online', this.usersOnline); // Socket.io emite para todos os usuários
+                SocketAdapter.io.emit('users_online', this.usersOnline); // Socket.io emite para todos os usuários
             };
             socket.on('disconnect', removeUser);
             socket.on('logout', removeUser);
@@ -54,6 +53,14 @@ class Socket {
             console.log('Client connected', socket.id);
         });
     }
+
+
+    public getUserBySocketID(socketID:string){
+        const user = Object.values(this.usersOnline).find(
+            (user) => user.socketId === socketID,
+        );
+        return user;
+    }
 }
 
-export default Socket;
+export default SocketAdapter;

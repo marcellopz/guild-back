@@ -7,15 +7,15 @@ class HashTile{
         this._simbol = "";
     }
 
-    public get_coordinates() : number[]{
+    public getCoordinates() : number[]{
         return this._coordinates;
     }
 
-    public get_simbol() : string{
+    public getSymbol() : string{
         return this._simbol
     }
 
-    public set_simbol(simbol:string){
+    public setSymbol(simbol:string){
         this._simbol = simbol;
     }
 }
