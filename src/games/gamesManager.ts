@@ -1,4 +1,4 @@
-import HashGame from "./hash_game/hash_game";
+import HashGame from "./hash_game/hashGame";
 import Player from "./player";
 
 class GamesManager{

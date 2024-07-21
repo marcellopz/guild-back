@@ -7,10 +7,9 @@ import helmet from 'helmet';
 import cookieParser from 'cookie-parser';
 import Controller from '@/utils/interfaces/controller.interface';
 import errorMiddleware from '@/middleware/error.middleware';
-import Hash from './games/hash_game/hash';
 import { createServer, Server as HTTPServer } from 'http';
-import Socket from '@/resources/Socket';
-import GamesManager from './games/games_manager';
+import Socket from '@/resources/SocketAdapter';
+import GamesManager from './games/gamesManager';
 
 export const allowedOrigins = [
     'http://localhost:5173',

@@ -1,7 +1,7 @@
 import Player from "games/player";
 import Hash from "./hash";
-import TurnManager from "./turn_manager";
-import HashGameRule from "./hash_game_rule";
+import TurnManager from "./turnManager";
+import HashGameRule from "./hashGameRule";
 
 class HashGame{
     private _hash : Hash = new Hash();
@@ -14,15 +14,14 @@ class HashGame{
         this._turn_manager = new TurnManager(players)
         this._rule = new HashGameRule(this);
         this._players = players;
-        this._rule.addConditionMetListener(this.on_player_win)
-
+        this._rule.addConditionMetListener(this.onPlayerWin)
     }
 
-    public get_hash(): Hash{
+    public getHash(): Hash{
         return this._hash;
     }
 
-    public on_player_win(){
+    public onPlayerWin(){
         // the actual player wins
     }
 }
