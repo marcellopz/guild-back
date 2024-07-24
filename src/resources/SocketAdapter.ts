@@ -2,7 +2,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { allowedOrigins } from '../app';
 import { ServerManager } from './ServerManager';
-import ChatRoomManager from './ChatRoomManager';
+import ChatRoomManager from './room_managers/chat/ChatRoomManager';
 
 class SocketAdapter {
     public static io: SocketIOServer;

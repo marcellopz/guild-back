@@ -1,17 +1,14 @@
 import { Socket, Namespace } from 'socket.io';
-import SocketAdapter from './SocketAdapter';
-import { ServerManager } from './ServerManager';
+import SocketAdapter from '../../SocketAdapter';
 import ChatRoom from './ChatRoom';
-import User from './User';
+import User from '../../User';
 
 class ChatRoomManager {
-    private serverManager: ServerManager;
     private io: Namespace;
     private rooms: ChatRoom[];
 
     constructor() {
         this.rooms = [];
-        this.serverManager = ServerManager.getInstance();
         this.io = SocketAdapter.io.of('/chat');
         this.createRooms();
         this.initializeChatRoomManager();
@@ -20,7 +17,7 @@ class ChatRoomManager {
     public initializeChatRoomManager() {
         this.io.on('connection', (socket) => {
             socket.on(
-                'join_room',
+                'join_chatroom',
                 (
                     roomNumber: 1 | 2 | 3 | 4 | 5,
                     userData: { username: string; userId: string },

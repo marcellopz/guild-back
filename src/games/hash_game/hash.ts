@@ -136,6 +136,10 @@ class Hash {
             return false;
         }
     }
+
+    public getTile(coordinates: number[]){
+        return this._hash[coordinates[0]][coordinates[1]]
+    }
 }
 
 export default Hash

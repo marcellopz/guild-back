@@ -58,8 +58,7 @@ class OxGameTableLine{
 
     public getPoints(): number {
         return this._tiles
-            .map(tile => tile.getCard()?.getValue())
-            .filter(value => value != null)
+            .map(tile => tile.getCard()?.getValue() ?? 0)
             .slice(0, -1)
             .reduce((total, value) => total + value, 0);
     }

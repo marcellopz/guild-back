@@ -17,6 +17,18 @@ class HashGame{
         this._rule.addConditionMetListener(this.onPlayerWin)
     }
 
+    public play(coordinates:number[]){
+        let playerSymbol = this._turn_manager.getActualPlayer()?.get_symbol();
+        if (!playerSymbol) return;
+        let playTile = this._hash.getTile(coordinates)
+        
+        if (playTile.getSymbol() == ""){
+            playTile.setSymbol(playerSymbol)
+        }
+        
+        this._turn_manager.changeTurn();
+    }
+
     public getHash(): Hash{
         return this._hash;
     }
