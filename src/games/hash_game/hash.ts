@@ -1,19 +1,19 @@
 import HashTile from "./hashTile";
 
 class Hash {
-    private hash: HashTile[][]
+    private _hash: HashTile[][]
 
     constructor() {
-        this.hash = [];
+        this._hash = [];
 
         this.buildHash();
     }
 
     private buildHash() {
         for (var i: number = 0; i < 3; i++) {
-            this.hash[i] = [];
+            this._hash[i] = [];
             for (var j: number = 0; j < 3; j++) {
-                this.hash[i][j] = new HashTile(i, j);
+                this._hash[i][j] = new HashTile(i, j);
             }
         }
     }
@@ -27,11 +27,11 @@ class Hash {
             return true;
         }
 
-        if (coordinate[0] == coordinate[1] && this.mainDiagonalCheck(symbol)){
+        if (coordinate[0] === coordinate[1] && this.mainDiagonalCheck(symbol)){
             return true;
         }
 
-        if (coordinate[0] + coordinate[1] == 2 && this.secondaryDiagonalCheck(symbol))
+        if (coordinate[0] + coordinate[1] === 2 && this.secondaryDiagonalCheck(symbol))
         {
             return true;
         }
@@ -42,8 +42,8 @@ class Hash {
     public lineCheck(line:number, symbol:string) : boolean{
         var count : number = 0;
         for (var j: number = 0; j < 3; j++){
-            var actual_symbol : string = this.hash[line][j].getSymbol()
-            if (actual_symbol == symbol){
+            var actual_symbol : string = this._hash[line][j].getSymbol()
+            if (actual_symbol === symbol){
                 count++;
             }
             else{
@@ -51,7 +51,7 @@ class Hash {
             }
         }
 
-        if (count == 3){
+        if (count === 3){
             return true;
         }
         else
@@ -63,8 +63,8 @@ class Hash {
     public columnCheck(column:number, symbol:string) : boolean{
         var count : number = 0;
         for (var i: number = 0; i < 3; i++){
-            var actual_symbol : string = this.hash[i][column].getSymbol()
-            if (actual_symbol == symbol){
+            var actual_symbol : string = this._hash[i][column].getSymbol()
+            if (actual_symbol === symbol){
                 count++;
             }
             else{
@@ -72,7 +72,7 @@ class Hash {
             }
         }
 
-        if (count == 3){
+        if (count === 3){
             return true;
         }
         else
@@ -84,10 +84,10 @@ class Hash {
     public mainDiagonalCheck(symbol:string) : boolean{
         var count : number = 0;
         for (var i: number = 0; i < 3; i++) {
-            this.hash[i] = [];
+            this._hash[i] = [];
             for (var j: number = 0; j < 3; j++) {
-                if (i == j){
-                    var actual_symbol : string = this.hash[i][j].getSymbol()
+                if (i === j){
+                    var actual_symbol : string = this._hash[i][j].getSymbol()
 
                     if (actual_symbol == symbol){
                         count++;
@@ -100,7 +100,7 @@ class Hash {
             }
         }
 
-        if (count == 3){
+        if (count === 3){
             return true;
         }
         else
@@ -112,10 +112,10 @@ class Hash {
     public secondaryDiagonalCheck(symbol:string) : boolean{
         var count : number = 0;
         for (var i: number = 0; i < 3; i++) {
-            this.hash[i] = [];
+            this._hash[i] = [];
             for (var j: number = 0; j < 3; j++) {
-                if (i + j == 2){
-                    var actual_symbol : string = this.hash[i][j].getSymbol()
+                if (i + j === 2){
+                    var actual_symbol : string = this._hash[i][j].getSymbol()
 
                     if (actual_symbol == symbol){
                         count++;
@@ -128,7 +128,7 @@ class Hash {
             }
         }
 
-        if (count == 3){
+        if (count === 3){
             return true;
         }
         else

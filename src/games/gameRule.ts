@@ -1,6 +1,6 @@
 import Player from "./player";
 
-class GameRule<T>{
+export class GameRule<T>{
     private _game: T;
     private _ended: boolean = false;
     private _conditionMet: ((value: boolean) => void)[] = [];
@@ -31,5 +31,3 @@ class GameRule<T>{
         this._conditionMet.push(callback);
     }
 }
-
-export default GameRule;
