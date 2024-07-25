@@ -1,6 +1,8 @@
 import { Server as SocketIOServer } from 'socket.io';
 import SocketAdapter from './SocketAdapter';
 import User from './User';
+import ChatRoomManager from './room_managers/chat/ChatRoomManager';
+import GameRoomManagers from './room_managers/game/GameRoomManagers';
 
 export class ServerManager {
     public static instance: ServerManager;
@@ -10,6 +12,8 @@ export class ServerManager {
     private constructor() {
         this.usersOnline = {};
         this.io = SocketAdapter.io;
+        new ChatRoomManager();
+        new GameRoomManagers();
     }
 
     public static getInstance(): ServerManager {

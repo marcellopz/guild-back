@@ -2,11 +2,10 @@ import { Server as SocketIOServer } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { allowedOrigins } from '../app';
 import { ServerManager } from './ServerManager';
-import ChatRoomManager from './room_managers/chat/ChatRoomManager';
 
 class SocketAdapter {
     public static io: SocketIOServer;
-    public serverManager: ServerManager = ServerManager.getInstance();
+    public serverManager: ServerManager;
 
     constructor(httpServer: HTTPServer) {
         SocketAdapter.io = new SocketIOServer(httpServer, {
@@ -16,7 +15,7 @@ class SocketAdapter {
             },
         });
         this.initializeSocketIO();
-        new ChatRoomManager();
+        this.serverManager = ServerManager.getInstance();
     }
 
     private initializeSocketIO(): void {

@@ -1,22 +1,22 @@
-import User from "../../User";
+import User from '../../User';
 
-class GameRoom{
-    private id:string;
-    private name:string;
-    private password:string;
-    private owner:User;
-    private users:User[];
+class GameRoom {
+    private name: string;
+    private password: string;
+    private owner: User;
+    private users: User[];
 
-    constructor(name:string, password:string, owner:User){
-        this.id = name;
+    constructor(name: string, password: string, owner: User) {
         this.name = name;
         this.password = password;
         this.owner = owner;
-        this.users = [owner]
+        this.users = [owner];
     }
 
-    public addUser(user:User){
-        this.users.push(user);
+    public addUser(user: User) {
+        if (!this.users.find((u) => u.id === user.id)) {
+            this.users.push(user);
+        }
     }
 
     public removeUser(user: User) {
@@ -31,15 +31,15 @@ class GameRoom{
         return this.users;
     }
 
-    public getPassword():string{
+    public getPassword(): string {
         return this.password;
     }
 
-    public getOwner(): User{
+    public getOwner(): User {
         return this.owner;
     }
 
-    public setOwner(owner:User){
+    public setOwner(owner: User) {
         this.owner = owner;
     }
 }
