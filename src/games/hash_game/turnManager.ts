@@ -10,6 +10,9 @@ class TurnManager{
         this._players = players;
         this._actual_index = this.randomizeTurn();
         this._actual_player = players[this._actual_index];
+
+        this._players[0].set_symbol("x");
+        this._players[1].set_symbol("o");
     }
 
     public randomizeTurn() : number{
