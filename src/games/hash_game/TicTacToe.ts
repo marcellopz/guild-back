@@ -2,8 +2,6 @@ import { Namespace } from 'socket.io';
 import HashGameLogic, { TicTacToeState } from './TicTacToeLogic';
 import TicTacToeNetwork from './TicTacToeNetwork';
 import GameRoom from '@/resources/room_managers/game/GameRoom';
-import Player from '../player';
-import Hash from './hash';
 
 class TicTacToe {
     private gameLogic: HashGameLogic;
@@ -18,8 +16,8 @@ class TicTacToe {
 
         this.gameLogic = new HashGameLogic(players);
 
-        this.gameLogic.addListener(this.onPlayerPlay);
-        this.gameNetwork.addListener(this.playReceived);
+        this.gameLogic.addListener(this.onPlayerPlay.bind(this));
+        this.gameNetwork.addListener(this.playReceived.bind(this));
         io.to(room.getName()).emit('send_game_state', this.getGameState());
     }
 

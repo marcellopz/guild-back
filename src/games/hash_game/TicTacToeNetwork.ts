@@ -32,13 +32,12 @@ class TicTacToeNetwork {
         this.room = room;
         this.io = io;
 
-        // this.room.getPlayers().forEach((player) => {
-        //     player.socketId.on('front_player_play', this.receivePlayerPlay);
-        // });
-        this.io.on('front_player_play', (a) => {
-            console.log('received front player play', a);
+        this.room.getPlayers().forEach((player) => {
+            player.socket.on(
+                'front_player_play',
+                this.receivePlayerPlay.bind(this),
+            );
         });
-        this.io.emit('testwe', 'test');
     }
 
     public createPlayersFromRoom(room: GameRoom): Player[] {

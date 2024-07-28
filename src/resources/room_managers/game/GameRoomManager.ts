@@ -7,8 +7,8 @@ import TicTacToeLobby from 'lobby/ticTacToeLobby';
 function removePassword(room: GameRoom) {
     return {
         name: room.getName(),
-        owner: room.getOwner(),
-        users: room.getUsers(),
+        owner: room.getOwner().getUserData(),
+        users: room.getUsers().map((u) => u.getUserData()),
         hasPassword: room.getPassword() !== '',
     };
 }
@@ -55,7 +55,7 @@ class GameRoomManager {
                     let user = new User(
                         userData?.userId,
                         userData?.username,
-                        socket.id,
+                        socket,
                     );
                     if (user === undefined) return;
                     let room = this.rooms.filter(
@@ -100,9 +100,10 @@ class GameRoomManager {
                                 'existing_rooms',
                                 this.getExistingRooms(),
                             );
-                            this.io
-                                .to(gameRoom.getName())
-                                .emit('game_users_online', gameRoom.getUsers());
+                            this.io.to(gameRoom.getName()).emit(
+                                'game_users_online',
+                                gameRoom.getUsers().map((u) => u.getUserData()),
+                            );
                         } else {
                             socket.emit('wrong_password');
                         }
@@ -149,7 +150,8 @@ class GameRoomManager {
 
         socket.on(
             'front_new_message',
-            (message: { message: string; user: User; createdAt: string }) => {
+            (message: { message: string; user: any; createdAt: string }) => {
+                // user enviado pelo front
                 this.io
                     .to(gameRoom.getName())
                     .emit('back_new_message', message);

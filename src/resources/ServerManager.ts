@@ -27,11 +27,4 @@ export class ServerManager {
     public setUsers(users: Record<string, User>) {
         this.usersOnline = users;
     }
-
-    public getUserBySocketID(socketID: string) {
-        const user = Object.values(this.usersOnline).find(
-            (user) => user.socketId === socketID,
-        );
-        return user;
-    }
 }

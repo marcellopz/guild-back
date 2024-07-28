@@ -27,7 +27,7 @@ class ChatRoomManager {
                     let user = new User(
                         userData.userId,
                         userData.username,
-                        socket.id,
+                        socket,
                     );
                     if (user === undefined) return;
                     chatRoom.addUser(user);
@@ -45,18 +45,24 @@ class ChatRoomManager {
         user: User,
         chatRoom: ChatRoom,
     ) {
-        this.io
-            .to(chatRoom.getName())
-            .emit('chat_users_online', chatRoom.getUsers());
+        this.io.to(chatRoom.getName()).emit(
+            'chat_users_online',
+            chatRoom.getUsers().map((u) => u.getUserData()),
+        );
         socket.on('disconnect', () => {
             chatRoom.removeUser(user);
-            this.io
-                .to(chatRoom.getName())
-                .emit('chat_users_online', chatRoom.getUsers());
+            this.io.to(chatRoom.getName()).emit(
+                'chat_users_online',
+                chatRoom.getUsers().map((u) => u.getUserData()),
+            );
         });
         socket.on(
             'front_new_message',
-            (message: { message: string; user: User; createdAt: string }) => {
+            (message: {
+                message: string;
+                user: any; // dados de user enviado pelo front
+                createdAt: string;
+            }) => {
                 this.io
                     .to(chatRoom.getName())
                     .emit('back_new_message', message);
