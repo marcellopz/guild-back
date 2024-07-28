@@ -18,7 +18,7 @@ class TicTacToeRule extends GameRule<HashGameLogic> {
             player.get_symbol(),
         );
         if (game_win) {
-            this.win();
+            this.win(player);
         }
     }
 }

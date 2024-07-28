@@ -24,6 +24,10 @@ class Player{
     public get_symbol():string{
         return this._symbol;
     }
+
+    public getId():string{
+        return this._id;
+    }
 }
 
 export default Player
