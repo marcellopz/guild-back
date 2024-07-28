@@ -1,5 +1,5 @@
 import { Namespace } from 'socket.io';
-import HashGameLogic from './TicTacToeLogic';
+import HashGameLogic, { TicTacToeState } from './TicTacToeLogic';
 import TicTacToeNetwork from './TicTacToeNetwork';
 import GameRoom from '@/resources/room_managers/game/GameRoom';
 import Player from '../player';
@@ -19,30 +19,32 @@ class TicTacToe {
         this.gameLogic = new HashGameLogic(players);
 
         this.gameLogic.addListener(this.onPlayerPlay);
-        this.gameNetwork.addListener(this.playReceived)
+        this.gameNetwork.addListener(this.playReceived);
+        io.to(room.getName()).emit('send_game_state', this.getGameState());
     }
 
     public getRoomName() {
         return this.gameRoom.getName();
     }
 
-    public onPlayerPlay(hash: Hash, player:Player){
-        this.gameNetwork.sendPlayerPlay(hash, player);
+    public onPlayerPlay(gameState: TicTacToeState) {
+        this.gameNetwork.sendGameState(gameState);
     }
 
-    public onPlayerWin(player:Player) {
-        this.gameNetwork.sendPlayerWin(player);
-    }
-
-    public playReceived(userId:string, coordinate:[number, number]){
-        
-        let actualPlayer = this.gameLogic.getPlayers().find( (player) => player.getId() === userId);
+    public playReceived(userId: string, coordinate: [number, number]) {
+        let actualPlayer = this.gameLogic
+            .getPlayers()
+            .find((player) => player.getId() === userId);
 
         if (!actualPlayer) return;
-        
-        if (this.gameLogic.isPlayerTurn(actualPlayer)){
+
+        if (this.gameLogic.isPlayerTurn(actualPlayer)) {
             this.gameLogic.play(coordinate);
         }
+    }
+
+    public getGameState(): TicTacToeState {
+        return this.gameLogic.getGameState();
     }
 }
 

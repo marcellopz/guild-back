@@ -29,7 +29,8 @@ class TicTacToeLobby {
         let game: TicTacToe = new TicTacToe(this.gameRoomManager.getIo(), room);
         this.activeGames.push(game);
 
-        socket.to(room.getName()).emit("game_started");
+        socket.to(room.getName()).emit('game_started');
+        socket.emit('game_started');
     }
 
     public deleteGame(room: GameRoom) {
