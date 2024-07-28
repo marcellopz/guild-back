@@ -5,12 +5,14 @@ class GameRoom {
     private password: string;
     private owner: User;
     private users: User[];
+    private players: User[];
 
     constructor(name: string, password: string, owner: User) {
         this.name = name;
         this.password = password;
         this.owner = owner;
         this.users = [owner];
+        this.players = [owner]
     }
 
     public addUser(user: User) {
@@ -27,6 +29,9 @@ class GameRoom {
         return this.name;
     }
 
+    public getPlayers(): User[] {
+        return this.players;
+    }
     public getUsers(): User[] {
         return this.users;
     }

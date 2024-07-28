@@ -1,13 +1,13 @@
-import HashGame from "./hashGame";
+import HashGameLogic from "./TicTacToeLogic";
 import Player from "games/player";
 import HashTile from "./hashTile";
 import Hash from "./hash";
 import { Socket } from "socket.io";
 import { GameRule } from "../gameRule";
 
-class HashGameRule extends GameRule<HashGame>{
-    private _hash_game: HashGame;
-    constructor(hash_game:HashGame){
+class HashGameRule extends GameRule<HashGameLogic>{
+    private _hash_game: HashGameLogic;
+    constructor(hash_game:HashGameLogic){
         super(hash_game);
         this._hash_game = hash_game
     }

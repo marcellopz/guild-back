@@ -3,17 +3,17 @@ import Hash from "./hash";
 import TurnManager from "./turnManager";
 import HashGameRule from "./hashGameRule";
 
-class HashGame{
+class HashGameLogic{
     private _hash : Hash = new Hash();
     private _turn_manager : TurnManager;
-    private _players : Array<Player>;
+    private _players : Player[];
     private _rule : HashGameRule;
     // game_rules
 
-    constructor(players:Array<Player>){
-        this._turn_manager = new TurnManager(players)
-        this._rule = new HashGameRule(this);
+    constructor(players: Player[]){
         this._players = players;
+        this._turn_manager = new TurnManager(this._players)
+        this._rule = new HashGameRule(this);
         this._rule.addConditionMetListener(this.onPlayerWin)
     }
 
@@ -38,4 +38,4 @@ class HashGame{
     }
 }
 
-export default HashGame;
+export default HashGameLogic;

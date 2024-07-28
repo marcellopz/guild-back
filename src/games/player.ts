@@ -1,9 +1,11 @@
 class Player{
+    private _id: string;
     private _name : string;
     private _symbol : string;
 
-    constructor(name:string){
+    constructor(name:string, id:string){
         this._name = name;
+        this._id = id;
         this._symbol = "";
     }
 

@@ -152,6 +152,10 @@ class GameRoomManager {
     public onPlayerJoin(socket: Socket, room: string) {
         socket.join(room);
     }
+
+    public getIo() : Namespace{
+        return this.io;
+    }
 }
 
 export default GameRoomManager;
