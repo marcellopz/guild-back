@@ -1,11 +1,11 @@
-import SocketAdapter from "@/resources/SocketAdapter";
-import TicTacToeLobby from "./ticTacToeLobby";
+import SocketAdapter from '@/resources/SocketAdapter';
+import TicTacToeLobby from './ticTacToeLobby';
 
-class LobbiesManager{
-    constructor(){
-    }
-
-    public createNewLobby(){
-        
+class LobbiesManager {
+    public ticTacToeLobby: TicTacToeLobby;
+    constructor() {
+        this.ticTacToeLobby = new TicTacToeLobby();
     }
 }
+
+export default LobbiesManager;

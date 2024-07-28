@@ -2,7 +2,7 @@ import { Server as SocketIOServer } from 'socket.io';
 import SocketAdapter from './SocketAdapter';
 import User from './User';
 import ChatRoomManager from './room_managers/chat/ChatRoomManager';
-import GameRoomManagers from './room_managers/game/GameRoomManagers';
+import LobbiesManager from '../lobby/LobbiesManager';
 
 export class ServerManager {
     public static instance: ServerManager;
@@ -13,7 +13,7 @@ export class ServerManager {
         this.usersOnline = {};
         this.io = SocketAdapter.io;
         new ChatRoomManager();
-        new GameRoomManagers();
+        new LobbiesManager();
     }
 
     public static getInstance(): ServerManager {

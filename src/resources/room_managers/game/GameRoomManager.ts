@@ -2,6 +2,7 @@ import { Namespace, Socket } from 'socket.io';
 import SocketAdapter from '../../SocketAdapter';
 import GameRoom from './GameRoom';
 import User from '../../User';
+import TicTacToeLobby from 'lobby/ticTacToeLobby';
 
 function removePassword(room: GameRoom) {
     return {
@@ -16,12 +17,14 @@ class GameRoomManager {
     private rooms: GameRoom[];
     private namespace: string;
     private io: Namespace;
+    private lobby: TicTacToeLobby;
 
-    constructor(namespace: string) {
+    constructor(namespace: string, lobby: TicTacToeLobby) {
         this.rooms = [];
         this.namespace = namespace;
         this.io = SocketAdapter.io.of('/' + namespace);
         this.initializeGameRoomManager();
+        this.lobby = lobby;
     }
 
     public getNameSpace() {
@@ -68,6 +71,9 @@ class GameRoomManager {
                         this.rooms.push(gameRoom);
                         this.io.emit('existing_rooms', this.getExistingRooms());
                         socket.join(gameRoom.getName());
+                        socket.on('start_game', () => {
+                            this.lobby.startNewGame(gameRoom, socket);
+                        });
                         this.joinedRoomSocketSignals(socket, user, gameRoom);
                     }
                     // Entrar em sala existente
@@ -75,6 +81,14 @@ class GameRoomManager {
                         let gameRoom: GameRoom = room[0];
                         if (gameRoom.getPassword() === password) {
                             gameRoom.addUser(user);
+                            if (
+                                this.lobby.getMaxPlayers() >
+                                gameRoom.getPlayers().length
+                            ) {
+                                gameRoom.addPlayer(user);
+                            } else {
+                                gameRoom.addSpectator(user);
+                            }
                             socket.join(gameRoom.getName());
                             this.joinedRoomSocketSignals(
                                 socket,
@@ -96,7 +110,8 @@ class GameRoomManager {
                 },
             );
             socket.on('grilha', () => {
-                console.log(this.rooms);
+                console.log('rooms', this.rooms);
+                console.log('active games', this.lobby.getActiveGames());
             });
         });
     }
@@ -111,22 +126,27 @@ class GameRoomManager {
             if (room === undefined) return;
             socket.emit('room_info', room);
         });
+
         this.io
             .to(gameRoom.getName())
             .emit('room_info', removePassword(gameRoom));
+
         socket.on('disconnect', () => {
             if (gameRoom.getOwner().id === user.id) {
                 this.rooms = this.rooms.filter(
                     (room) => room.getName() !== gameRoom.getName(),
                 );
+                this.lobby.deleteGame(gameRoom);
                 this.io.to(gameRoom.getName()).emit('room_deleted');
             }
+
             gameRoom.removeUser(user);
             this.io
                 .to(gameRoom.getName())
                 .emit('room_info', removePassword(gameRoom));
             this.io.emit('existing_rooms', this.getExistingRooms());
         });
+
         socket.on(
             'front_new_message',
             (message: { message: string; user: User; createdAt: string }) => {
@@ -153,7 +173,7 @@ class GameRoomManager {
         socket.join(room);
     }
 
-    public getIo() : Namespace{
+    public getIo(): Namespace {
         return this.io;
     }
 }
