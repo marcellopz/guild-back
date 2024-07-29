@@ -47,13 +47,13 @@ class ChatRoomManager {
     ) {
         this.io.to(chatRoom.getName()).emit(
             'chat_users_online',
-            chatRoom.getUsers().map((u) => u.getUserData()),
+            chatRoom.getUsers(),
         );
         socket.on('disconnect', () => {
             chatRoom.removeUser(user);
             this.io.to(chatRoom.getName()).emit(
                 'chat_users_online',
-                chatRoom.getUsers().map((u) => u.getUserData()),
+                chatRoom.getUsers(),
             );
         });
         socket.on(
