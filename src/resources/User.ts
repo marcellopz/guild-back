@@ -22,6 +22,10 @@ class User {
             username: this.username,
         };
     }
+
+    public toJSON() {
+        return this.getUserData();
+    }
 }
 
 export default User;

@@ -32,9 +32,7 @@ class SocketAdapter {
                     );
                     SocketAdapter.io.emit(
                         'users_online',
-                        Object.values(this.serverManager.usersOnline).map(
-                            (us) => us.getUserData(),
-                        ),
+                        this.serverManager.usersOnline,
                     ); // Socket.io emite para todos os usuários
                 },
             );
@@ -50,18 +48,14 @@ class SocketAdapter {
                 delete this.serverManager.usersOnline[user.id];
                 SocketAdapter.io.emit(
                     'users_online',
-                    Object.values(this.serverManager.usersOnline).map((u) =>
-                        u.getUserData(),
-                    ),
+                    this.serverManager.usersOnline,
                 ); // Socket.io emite para todos os usuários
             };
             socket.on('disconnect', removeUser);
             socket.on('logout', removeUser);
             socket.emit(
                 'users_online',
-                Object.values(this.serverManager.usersOnline).map((u) =>
-                    u.getUserData(),
-                ),
+                this.serverManager.usersOnline,
             ); // socket.emit emite apenas para o usuário que se conectou
             console.log('Client connected', socket.id);
         });

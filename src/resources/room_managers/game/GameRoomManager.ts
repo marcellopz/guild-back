@@ -159,7 +159,7 @@ class GameRoomManager {
             );
             this.io.to(room.getName()).emit(
                 'game_users_online',
-                room.getUsers().map((u) => u.getUserData()),
+                room.getUsers(),
             );
         } else {
             user.socket.emit('wrong_password');
