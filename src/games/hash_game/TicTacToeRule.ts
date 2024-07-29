@@ -11,10 +11,10 @@ class TicTacToeRule extends GameRule<HashGameLogic> {
         this._hash_game = hash_game;
     }
 
-    public onPlayerPlay(player: Player, hash_tile: HashTile) {
+    public checkWinner(player: Player, coordinates:[number, number]) {
         var hash: Hash = this._hash_game.getHash();
         var game_win: boolean = hash.checkCoordinate(
-            hash_tile.getCoordinates(),
+            coordinates,
             player.get_symbol(),
         );
         if (game_win) {

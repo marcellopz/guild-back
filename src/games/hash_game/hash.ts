@@ -1,11 +1,9 @@
 import HashTile from './hashTile';
 
 class Hash {
-    private _hash: HashTile[][];
+    private _hash: HashTile[][] = [];
 
     constructor() {
-        this._hash = [];
-
         this.buildHash();
     }
 
@@ -16,6 +14,7 @@ class Hash {
                 this._hash[i][j] = new HashTile(i, j);
             }
         }
+        console.log(`Final hash`, this._hash);
     }
 
     public checkCoordinate(coordinate: number[], symbol: string) {
@@ -80,7 +79,6 @@ class Hash {
     public mainDiagonalCheck(symbol: string): boolean {
         var count: number = 0;
         for (var i: number = 0; i < 3; i++) {
-            this._hash[i] = [];
             for (var j: number = 0; j < 3; j++) {
                 if (i === j) {
                     var actual_symbol: string = this._hash[i][j].getSymbol();
@@ -104,7 +102,6 @@ class Hash {
     public secondaryDiagonalCheck(symbol: string): boolean {
         var count: number = 0;
         for (var i: number = 0; i < 3; i++) {
-            this._hash[i] = [];
             for (var j: number = 0; j < 3; j++) {
                 if (i + j === 2) {
                     var actual_symbol: string = this._hash[i][j].getSymbol();

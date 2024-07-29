@@ -28,18 +28,22 @@ class HashGameLogic {
         this._players = players;
         this._turn_manager = new TurnManager(this._players);
         this._rule = new TicTacToeRule(this);
-        this._rule.addConditionMetListener(this.onPlayerWin);
+        this._rule.addConditionMetListener(this.onPlayerWin.bind(this));
     }
 
-    public play(coordinates: number[]) {
+    public play(coordinates: [number, number]) {
         let playerSymbol = this._turn_manager.getActualPlayer()?.get_symbol();
         if (!playerSymbol) return;
         let playTile = this._hash.getTile(coordinates);
-
+        
         if (playTile.getSymbol() == '') {
             playTile.setSymbol(playerSymbol);
         }
 
+        let player = this._turn_manager.getActualPlayer();
+        
+        player? this._rule.checkWinner(player, coordinates) : console.error("Player is null or undefined.");
+        
         this._turn_manager.changeTurn();
 
         this.callEvent(this.getGameState());
@@ -50,8 +54,8 @@ class HashGameLogic {
     }
 
     public onPlayerWin(player: Player) {
+        console.log(player);
         this._winner = player;
-        // the actual player wins
     }
 
     public addListener(callback: (gameState: TicTacToeState) => void) {
@@ -82,6 +86,10 @@ class HashGameLogic {
             draw: false,
             players: this._players,
         };
+    }
+
+    public hasEnded():boolean{
+        return this._rule.Ended;
     }
 }
 

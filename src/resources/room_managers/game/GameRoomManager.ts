@@ -51,62 +51,23 @@ class GameRoomManager {
                     password: string,
                     userData: { username: string; userId: string },
                 ) => {
-                    // remover eventos depois ?
                     let user = new User(
                         userData?.userId,
                         userData?.username,
                         socket,
                     );
                     if (user === undefined) return;
-                    let room = this.rooms.filter(
-                        (room) => room.getName() === roomName,
+                    let rooms = this.rooms.filter(
+                        (rooms) => rooms.getName() === roomName,
                     );
                     // Criar nova sala
-                    if (room.length === 0) {
-                        let gameRoom: GameRoom = new GameRoom(
-                            roomName,
-                            password,
-                            user,
-                        );
-                        this.rooms.push(gameRoom);
-                        this.io.emit('existing_rooms', this.getExistingRooms());
-                        socket.join(gameRoom.getName());
-                        socket.on('start_game', () => {
-                            this.lobby.startNewGame(gameRoom, socket);
-                        });
-                        this.joinedRoomSocketSignals(socket, user, gameRoom);
+                    if (rooms.length === 0) {
+                        this.createNewRoom(roomName, password, user);
                     }
                     // Entrar em sala existente
                     else {
-                        let gameRoom: GameRoom = room[0];
-                        if (gameRoom.getPassword() === password) {
-                            gameRoom.addUser(user);
-                            if (
-                                this.lobby.getMaxPlayers() >
-                                gameRoom.getPlayers().length
-                            ) {
-                                gameRoom.addPlayer(user);
-                            } else {
-                                gameRoom.addSpectator(user);
-                            }
-                            socket.join(gameRoom.getName());
-                            this.joinedRoomSocketSignals(
-                                socket,
-                                user,
-                                gameRoom,
-                            );
-                            this.io.emit('room_info', removePassword(gameRoom));
-                            this.io.emit(
-                                'existing_rooms',
-                                this.getExistingRooms(),
-                            );
-                            this.io.to(gameRoom.getName()).emit(
-                                'game_users_online',
-                                gameRoom.getUsers().map((u) => u.getUserData()),
-                            );
-                        } else {
-                            socket.emit('wrong_password');
-                        }
+                        let gameRoom: GameRoom = rooms[0];
+                        this.joinExistingRoom(gameRoom, password, user);
                     }
                 },
             );
@@ -159,17 +120,51 @@ class GameRoomManager {
         );
     }
 
-    // public onPlayerCreateRoom(socket:Socket, roomName:string, password:string){
-    //     var user = this.serverManager.getUserBySocketID(socket.id);
+    public createNewRoom(name: string, password: string, owner: User) {
+        let gameRoom: GameRoom = new GameRoom(
+            name,
+            password,
+            owner,
+        );
+        this.rooms.push(gameRoom);
+        this.io.emit('existing_rooms', this.getExistingRooms());
+        owner.socket.join(gameRoom.getName());
+        owner.socket.on('start_game', () => {
+            this.lobby.startNewGame(gameRoom, owner.socket);
+        });
+        this.joinedRoomSocketSignals(owner.socket, owner, gameRoom);
+    }
 
-    //     if (user == undefined) return;
-
-    //     socket.join(roomName);
-
-    //     this.rooms.push(
-    //         new GameRoom(roomName, password, user)
-    //     )
-    // }
+    public joinExistingRoom(room:GameRoom, password:string, user:User) {
+        if (room.getPassword() === password) {
+            room.addUser(user);
+            if (
+                this.lobby.getMaxPlayers() >
+                room.getPlayers().length
+            ) {
+                room.addPlayer(user);
+            } else {
+                room.addSpectator(user);
+            }
+            user.socket.join(room.getName());
+            this.joinedRoomSocketSignals(
+                user.socket,
+                user,
+                room,
+            );
+            this.io.emit('room_info', removePassword(room));
+            this.io.emit(
+                'existing_rooms',
+                this.getExistingRooms(),
+            );
+            this.io.to(room.getName()).emit(
+                'game_users_online',
+                room.getUsers().map((u) => u.getUserData()),
+            );
+        } else {
+            user.socket.emit('wrong_password');
+        }
+    }
 
     public onPlayerJoin(socket: Socket, room: string) {
         socket.join(room);
