@@ -2,11 +2,11 @@ import { Server as SocketIOServer } from 'socket.io';
 import { Server as HTTPServer } from 'http';
 import { allowedOrigins } from '../app';
 import { ServerManager } from './ServerManager';
-import ChatRoomManager from './ChatRoomManager';
+import User from './User';
 
 class SocketAdapter {
     public static io: SocketIOServer;
-    public serverManager: ServerManager = ServerManager.getInstance();
+    public serverManager: ServerManager;
 
     constructor(httpServer: HTTPServer) {
         SocketAdapter.io = new SocketIOServer(httpServer, {
@@ -16,7 +16,7 @@ class SocketAdapter {
             },
         });
         this.initializeSocketIO();
-        new ChatRoomManager();
+        this.serverManager = ServerManager.getInstance();
     }
 
     private initializeSocketIO(): void {
@@ -25,11 +25,11 @@ class SocketAdapter {
                 'join_server',
                 (user_?: { username: string; userId: string }) => {
                     if (!user_) return;
-                    this.serverManager.usersOnline[user_.userId] = {
-                        id: user_.userId,
-                        username: user_.username,
-                        socketId: socket.id,
-                    };
+                    this.serverManager.usersOnline[user_.userId] = new User(
+                        user_.userId,
+                        user_.username,
+                        socket,
+                    );
                     SocketAdapter.io.emit(
                         'users_online',
                         this.serverManager.usersOnline,
@@ -42,7 +42,7 @@ class SocketAdapter {
             const removeUser = () => {
                 console.log('Client disconnected', socket.id);
                 const user = Object.values(this.serverManager.usersOnline).find(
-                    (user) => user.socketId === socket.id,
+                    (user) => user.socket.id === socket.id,
                 );
                 if (!user) return;
                 delete this.serverManager.usersOnline[user.id];
@@ -53,7 +53,10 @@ class SocketAdapter {
             };
             socket.on('disconnect', removeUser);
             socket.on('logout', removeUser);
-            socket.emit('users_online', this.serverManager.usersOnline); // socket.emit emite apenas para o usuário que se conectou
+            socket.emit(
+                'users_online',
+                this.serverManager.usersOnline,
+            ); // socket.emit emite apenas para o usuário que se conectou
             console.log('Client connected', socket.id);
         });
     }

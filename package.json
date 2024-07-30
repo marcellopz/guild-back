@@ -34,6 +34,7 @@
         "socket.io": "^4.7.5"
     },
     "_moduleAliases": {
+        "@/games": "dist/games",
         "@/resources": "dist/resources",
         "@/utils": "dist/utils",
         "@/middleware": "dist/middleware"

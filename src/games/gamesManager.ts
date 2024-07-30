@@ -1,13 +1,10 @@
-import HashGame from "./hash_game/hashGame";
+import { Namespace } from "socket.io";
+import TicTacToe from "./hash_game/TicTacToe";
+import HashGameLogic from "./hash_game/TicTacToeLogic";
 import Player from "./player";
 
 class GamesManager{
-    public players : Array<Player> = new Array<Player>(new Player("P1"), new Player("P2"))
-    public hash_game : HashGame
 
-    constructor(){
-        this.hash_game = new HashGame(this.players)
-    }
 }
 
 export default GamesManager

@@ -1,26 +1,32 @@
 class Player{
-    private name : string;
-    private symbol : string;
+    private _id: string;
+    private _name : string;
+    private _symbol : string;
 
-    constructor(name:string){
-        this.name = name;
-        this.symbol = "";
+    constructor(name:string, id:string){
+        this._name = name;
+        this._id = id;
+        this._symbol = "";
     }
 
     public set_name(name:string){
-        this.name = name;
+        this._name = name;
     }
 
     public get_name() : string{
-        return this.name;
+        return this._name;
     }
 
     public set_symbol(symbol:string){
-        this.symbol = symbol;
+        this._symbol = symbol;
     }
 
     public get_symbol():string{
-        return this.symbol;
+        return this._symbol;
+    }
+
+    public getId():string{
+        return this._id;
     }
 }
 

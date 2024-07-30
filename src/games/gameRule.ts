@@ -1,9 +1,9 @@
 import Player from "./player";
 
-class GameRule<T>{
+export class GameRule<T>{
     private _game: T;
     private _ended: boolean = false;
-    private _conditionMet: ((value: boolean) => void)[] = [];
+    private _conditionMet: ((player: Player) => void)[] = [];
 
     constructor(game:T){
         this._game = game;
@@ -13,23 +13,18 @@ class GameRule<T>{
         return this._ended;
     }
 
-    public win(){
+    public win(player:Player){
         if (!this._ended){
-            this._conditionMet.forEach(callback => callback(true));
+            this._conditionMet.forEach(callback => callback(player));
             this._ended = true;
         }
     }
 
-    public lose(){
-        if (!this._ended){
-            this._conditionMet.forEach(callback => callback(false));
-            this._ended = true;
-        }
-    }
-
-    public addConditionMetListener(callback: (value: boolean) => void) {
+    public addConditionMetListener(callback: (player: Player) => void) {
         this._conditionMet.push(callback);
     }
-}
 
-export default GameRule;
+    public callEvent(player:Player){
+        this._conditionMet.forEach(callback => callback(player));
+    }
+}

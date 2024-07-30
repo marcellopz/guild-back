@@ -1,17 +1,14 @@
 import { Socket, Namespace } from 'socket.io';
-import SocketAdapter from './SocketAdapter';
-import { ServerManager } from './ServerManager';
+import SocketAdapter from '../../SocketAdapter';
 import ChatRoom from './ChatRoom';
-import User from './User';
+import User from '../../User';
 
 class ChatRoomManager {
-    private serverManager: ServerManager;
     private io: Namespace;
     private rooms: ChatRoom[];
 
     constructor() {
         this.rooms = [];
-        this.serverManager = ServerManager.getInstance();
         this.io = SocketAdapter.io.of('/chat');
         this.createRooms();
         this.initializeChatRoomManager();
@@ -20,7 +17,7 @@ class ChatRoomManager {
     public initializeChatRoomManager() {
         this.io.on('connection', (socket) => {
             socket.on(
-                'join_room',
+                'join_chatroom',
                 (
                     roomNumber: 1 | 2 | 3 | 4 | 5,
                     userData: { username: string; userId: string },
@@ -30,7 +27,7 @@ class ChatRoomManager {
                     let user = new User(
                         userData.userId,
                         userData.username,
-                        socket.id,
+                        socket,
                     );
                     if (user === undefined) return;
                     chatRoom.addUser(user);
@@ -48,18 +45,24 @@ class ChatRoomManager {
         user: User,
         chatRoom: ChatRoom,
     ) {
-        this.io
-            .to(chatRoom.getName())
-            .emit('chat_users_online', chatRoom.getUsers());
+        this.io.to(chatRoom.getName()).emit(
+            'chat_users_online',
+            chatRoom.getUsers(),
+        );
         socket.on('disconnect', () => {
             chatRoom.removeUser(user);
-            this.io
-                .to(chatRoom.getName())
-                .emit('chat_users_online', chatRoom.getUsers());
+            this.io.to(chatRoom.getName()).emit(
+                'chat_users_online',
+                chatRoom.getUsers(),
+            );
         });
         socket.on(
             'front_new_message',
-            (message: { message: string; user: User; createdAt: string }) => {
+            (message: {
+                message: string;
+                user: any; // dados de user enviado pelo front
+                createdAt: string;
+            }) => {
                 this.io
                     .to(chatRoom.getName())
                     .emit('back_new_message', message);

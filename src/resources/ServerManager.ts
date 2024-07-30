@@ -1,6 +1,8 @@
 import { Server as SocketIOServer } from 'socket.io';
 import SocketAdapter from './SocketAdapter';
 import User from './User';
+import ChatRoomManager from './room_managers/chat/ChatRoomManager';
+import LobbiesManager from '../lobby/LobbiesManager';
 
 export class ServerManager {
     public static instance: ServerManager;
@@ -10,6 +12,8 @@ export class ServerManager {
     private constructor() {
         this.usersOnline = {};
         this.io = SocketAdapter.io;
+        new ChatRoomManager();
+        new LobbiesManager();
     }
 
     public static getInstance(): ServerManager {
@@ -22,12 +26,5 @@ export class ServerManager {
 
     public setUsers(users: Record<string, User>) {
         this.usersOnline = users;
-    }
-
-    public getUserBySocketID(socketID: string) {
-        const user = Object.values(this.usersOnline).find(
-            (user) => user.socketId === socketID,
-        );
-        return user;
     }
 }
