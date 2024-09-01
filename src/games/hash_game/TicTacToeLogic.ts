@@ -4,6 +4,13 @@ import TurnManager from './turnManager';
 import TicTacToeRule from './TicTacToeRule';
 import HashTile from './hashTile';
 
+function isTie(grid: HashTile[][], winner: Player | null): boolean {
+    return (
+        !winner &&
+        grid.every((row) => row.every((tile) => tile.getSymbol() !== ''))
+    );
+}
+
 export type TicTacToeState = {
     playerTurn?: string;
     grid: HashTile[][];
@@ -35,15 +42,17 @@ class HashGameLogic {
         let playerSymbol = this._turn_manager.getActualPlayer()?.get_symbol();
         if (!playerSymbol) return;
         let playTile = this._hash.getTile(coordinates);
-        
+
         if (playTile.getSymbol() == '') {
             playTile.setSymbol(playerSymbol);
         }
 
         let player = this._turn_manager.getActualPlayer();
-        
-        player? this._rule.checkWinner(player, coordinates) : console.error("Player is null or undefined.");
-        
+
+        player
+            ? this._rule.checkWinner(player, coordinates)
+            : console.error('Player is null or undefined.');
+
         this._turn_manager.changeTurn();
 
         this.callEvent(this.getGameState());
@@ -54,7 +63,6 @@ class HashGameLogic {
     }
 
     public onPlayerWin(player: Player) {
-        console.log(player);
         this._winner = player;
     }
 
@@ -83,12 +91,12 @@ class HashGameLogic {
             playerTurn: this._turn_manager.getActualPlayer()?.getId(),
             grid: this._hash.getGrid(),
             playerWin: this._winner,
-            draw: false,
+            draw: isTie(this._hash.getGrid(), this._winner),
             players: this._players,
         };
     }
 
-    public hasEnded():boolean{
+    public hasEnded(): boolean {
         return this._rule.Ended;
     }
 }
