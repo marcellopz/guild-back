@@ -40,8 +40,6 @@ class TicTacToeNetwork {
         });
     }
 
-
-
     public sendGameState(gameState: TicTacToeState) {
         this.io.to(this.room.getName()).emit('send_game_state', gameState);
     }

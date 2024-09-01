@@ -54,8 +54,13 @@ class GameRoom {
     public getPlayers(): User[] {
         return this.players;
     }
+
     public getUsers(): User[] {
         return this.users;
+    }
+
+    public getUser(userId: string): User | undefined {
+        return this.users.find((u) => u.id === userId);
     }
 
     public getPassword(): string {
